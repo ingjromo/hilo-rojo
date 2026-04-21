@@ -6,7 +6,7 @@
 /* Modifica aquí para personalizar la tienda sin tocar el HTML */
 const CONFIG = {
   WHATSAPP_NUMBER: '521XXXXXXXXXX',   // Número con código de país, sin + ni espacios
-  SHEET_ID:        'TU_SHEET_ID_AQUI', // ID del Google Sheet (ver README)
+  SHEET_ID:        '1ZsCesY-CZHkovHNpyl1-xptmYDjVQ59D0UgO38ClSiE', // ID del Google Sheet (ver README)
   ADMIN_PASS:      'hilorrojo2024',    // Contraseña del panel de administración
   NOMBRE_TIENDA:   'Hilo Rojo',
 };
