@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hilo Rojo — Tejidos artesanales</title>
+  <meta name="description" content="Tejidos artesanales hechos a mano en Chihuahua. Accesorios, figuras amigurumi, decoración navideña y flores tejidas.">
+  <meta name="theme-color" content="#1A1208">
+
+  <!-- Google Fonts: DM Serif Display + DM Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- ==================== NAVBAR ==================== -->
+  <nav class="navbar" role="navigation" aria-label="Menú principal">
+    <a href="#" class="navbar-logo" aria-label="Hilo Rojo — Inicio">
+      Hilo <em>Rojo</em>
+    </a>
+
+    <ul class="navbar-links">
+      <li>
+        <a href="#coleccion">Colección</a>
+      </li>
+      <li>
+        <a href="#" class="cart-btn" id="navbar-cart-btn" aria-label="Ver carrito">
+          Carrito <span class="cart-count" id="cart-count" aria-live="polite">0</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- ==================== HERO ==================== -->
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="hero-content">
+      <p class="hero-subtitle">Tejidos artesanales · Chihuahua</p>
+      <h1 class="hero-title" id="hero-title">
+        Hecho a mano,<br>
+        <em>tejido con alma</em>
+      </h1>
+      <p class="hero-description">
+        Cada pieza es única. Creada con amor, hilo y horas de dedicación artesanal.
+        Accesorios, figuras amigurumi, decoración navideña y más — hechos a pedido.
+      </p>
+      <div class="hero-buttons">
+        <a href="#coleccion" class="btn-primary">Ver colección</a>
+        <a href="#" class="btn-ghost" id="hero-cart-btn">Mi carrito</a>
+      </div>
+    </div>
+
+    <!-- Badge circular decorativo -->
+    <div class="hero-badge" aria-hidden="true">
+      <span class="hero-badge-emoji">🧶</span>
+      <span class="hero-badge-text">Hecho<br>a mano</span>
+    </div>
+  </section>
+
+  <!-- ==================== FRANJA DECORATIVA ==================== -->
+  <div class="stripe" aria-hidden="true">
+    <div class="stripe-track">
+      <!-- El texto se duplica para que el bucle sea invisible -->
+      <span class="stripe-text">
+        &nbsp;&nbsp;Envíos en Chihuahua&nbsp;&nbsp;✦&nbsp;&nbsp;Pedidos personalizados&nbsp;&nbsp;✦&nbsp;&nbsp;Pago por transferencia&nbsp;&nbsp;✦&nbsp;&nbsp;Hecho a mano&nbsp;&nbsp;✦&nbsp;&nbsp;100% original&nbsp;&nbsp;✦&nbsp;&nbsp;
+      </span>
+      <span class="stripe-text">
+        &nbsp;&nbsp;Envíos en Chihuahua&nbsp;&nbsp;✦&nbsp;&nbsp;Pedidos personalizados&nbsp;&nbsp;✦&nbsp;&nbsp;Pago por transferencia&nbsp;&nbsp;✦&nbsp;&nbsp;Hecho a mano&nbsp;&nbsp;✦&nbsp;&nbsp;100% original&nbsp;&nbsp;✦&nbsp;&nbsp;
+      </span>
+      <span class="stripe-text" aria-hidden="true">
+        &nbsp;&nbsp;Envíos en Chihuahua&nbsp;&nbsp;✦&nbsp;&nbsp;Pedidos personalizados&nbsp;&nbsp;✦&nbsp;&nbsp;Pago por transferencia&nbsp;&nbsp;✦&nbsp;&nbsp;Hecho a mano&nbsp;&nbsp;✦&nbsp;&nbsp;100% original&nbsp;&nbsp;✦&nbsp;&nbsp;
+      </span>
+      <span class="stripe-text" aria-hidden="true">
+        &nbsp;&nbsp;Envíos en Chihuahua&nbsp;&nbsp;✦&nbsp;&nbsp;Pedidos personalizados&nbsp;&nbsp;✦&nbsp;&nbsp;Pago por transferencia&nbsp;&nbsp;✦&nbsp;&nbsp;Hecho a mano&nbsp;&nbsp;✦&nbsp;&nbsp;100% original&nbsp;&nbsp;✦&nbsp;&nbsp;
+      </span>
+    </div>
+  </div>
+
+  <!-- ==================== FILTROS ==================== -->
+  <section class="filters" aria-label="Filtrar por categoría" id="filtros">
+    <span class="filters-label">Filtrar:</span>
+    <button class="filter-btn active" data-cat="todos">Todos</button>
+    <button class="filter-btn" data-cat="accesorios">Accesorios</button>
+    <button class="filter-btn" data-cat="figuras">Figuras</button>
+    <button class="filter-btn" data-cat="navidad">Navidad</button>
+    <button class="filter-btn" data-cat="flores">Flores &amp; Deco</button>
+  </section>
+
+  <!-- ==================== GRID DE PRODUCTOS ==================== -->
+  <section class="collection" id="coleccion" aria-labelledby="collection-heading">
+    <div class="collection-header">
+      <h2 class="collection-title" id="collection-heading">Colección</h2>
+      <span class="collection-count" id="collection-count" aria-live="polite">Cargando...</span>
+    </div>
+    <!-- Las tarjetas se inyectan aquí vía JavaScript -->
+    <div class="product-grid" id="product-grid" role="list"></div>
+  </section>
+
+  <!-- ==================== BANNER DE PAGO ==================== -->
+  <section class="payment-banner" aria-label="Información de pago">
+    <span class="payment-icon" aria-hidden="true">💳</span>
+    <div>
+      <h3 class="payment-title">Pagos por transferencia</h3>
+      <p class="payment-text">
+        Aceptamos pagos por transferencia bancaria SPEI / OXXO Pay.
+        Al hacer tu pedido por WhatsApp te enviamos los datos bancarios de inmediato.
+        Tu pedido se confirma una vez recibido el pago — sin complicaciones.
+      </p>
+    </div>
+  </section>
+
+  <!-- ==================== DRAWER DEL CARRITO ==================== -->
+  <!-- Aparece en el flujo del documento (no fixed) para mayor compatibilidad -->
+  <div class="cart-drawer" id="cart-drawer" role="region" aria-label="Carrito de compras">
+    <div class="cart-header">
+      <h3>Tu carrito</h3>
+      <button class="cart-close" id="cart-close" aria-label="Cerrar carrito">✕</button>
+    </div>
+    <!-- El contenido (lista de items + total) se genera desde JS -->
+    <div id="cart-body">
+      <p class="cart-empty">Tu carrito está vacío 🧶</p>
+    </div>
+  </div>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer role="contentinfo">
+    <span class="footer-logo">Hilo <em>Rojo</em></span>
+    <div class="footer-divider" aria-hidden="true"></div>
+    <div class="footer-info">
+      <p><strong>Chihuahua, México</strong></p>
+      <p>Pedidos por WhatsApp · Envíos locales</p>
+      <p>Pedidos personalizados disponibles</p>
+    </div>
+  </footer>
+
+  <!-- ==================== MODAL DE DETALLE ==================== -->
+  <div
+    class="modal-overlay"
+    id="modal-overlay"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="modal-name"
+  >
+    <div class="modal-card">
+      <!-- Botón cerrar -->
+      <button class="modal-close" id="modal-close" aria-label="Cerrar detalle">✕</button>
+
+      <!-- Imagen / emoji del producto -->
+      <div class="modal-img-wrap" id="modal-img-wrap">
+        <span class="modal-emoji" id="modal-emoji"></span>
+      </div>
+
+      <div class="modal-body">
+        <p class="modal-category" id="modal-category"></p>
+        <h2 class="modal-name"    id="modal-name"></h2>
+        <p class="modal-desc"     id="modal-desc"></p>
+        <p class="modal-price"    id="modal-price"></p>
+        <button class="btn-add-full" id="modal-add-btn">Agregar al carrito</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts: primero sheets.js (define fetchProductos), luego app.js -->
+  <script src="js/sheets.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Administración — Hilo Rojo</title>
+  <meta name="robots" content="noindex, nofollow">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <style>
+    /* ---- Variables (mismas que la tienda) ---- */
+    :root {
+      --ink:    #1A1208;
+      --ink2:   #5C4A35;
+      --ink3:   #9C8570;
+      --paper:  #F7F2EA;
+      --paper2: #EDE5D8;
+      --paper3: #E2D5C3;
+      --red:    #B8341B;
+      --red2:   #8C2614;
+      --gold:   #D4A96A;
+      --font-serif: 'DM Serif Display', Georgia, serif;
+      --font-sans:  'DM Sans', system-ui, sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--paper);
+      color: var(--ink);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ---- Navbar ---- */
+    .navbar {
+      background: var(--ink);
+      padding: 0 32px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .navbar-logo {
+      font-family: var(--font-serif);
+      color: var(--paper);
+      font-size: 1.3rem;
+      text-decoration: none;
+    }
+
+    .navbar-logo em { color: var(--gold); font-style: italic; }
+
+    .navbar-tag {
+      color: var(--ink3);
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    /* ---- Pantalla de login ---- */
+    .login-screen {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+    .login-box {
+      background: var(--paper);
+      border: 1px solid var(--paper3);
+      padding: 40px 36px;
+      max-width: 380px;
+      width: 100%;
+    }
+
+    .login-box h2 {
+      font-family: var(--font-serif);
+      font-size: 1.6rem;
+      margin-bottom: 8px;
+      color: var(--ink);
+    }
+
+    .login-box p {
+      color: var(--ink3);
+      font-size: 0.85rem;
+      font-weight: 300;
+      margin-bottom: 28px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--ink3);
+      margin-bottom: 8px;
+    }
+
+    input[type="password"],
+    input[type="text"] {
+      width: 100%;
+      border: 1px solid var(--paper3);
+      background: var(--paper2);
+      padding: 12px 14px;
+      font-family: var(--font-sans);
+      font-size: 0.95rem;
+      color: var(--ink);
+      outline: none;
+      border-radius: 0;
+      transition: border-color 0.2s;
+      margin-bottom: 16px;
+    }
+
+    input:focus { border-color: var(--ink2); }
+
+    .btn-login {
+      width: 100%;
+      background: var(--ink);
+      color: var(--paper);
+      border: none;
+      padding: 14px;
+      font-family: var(--font-sans);
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.2s;
+      border-radius: 0;
+    }
+
+    .btn-login:hover { background: var(--red); }
+
+    .login-error {
+      color: var(--red);
+      font-size: 0.82rem;
+      margin-top: 12px;
+      display: none;
+      text-align: center;
+    }
+
+    /* ---- Panel de administración ---- */
+    .admin-panel {
+      display: none;
+      flex: 1;
+      padding: 40px 32px;
+      max-width: 860px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .admin-panel.visible { display: block; }
+
+    .admin-title {
+      font-family: var(--font-serif);
+      font-size: 2rem;
+      color: var(--ink);
+      margin-bottom: 6px;
+    }
+
+    .admin-subtitle {
+      color: var(--ink3);
+      font-size: 0.85rem;
+      font-weight: 300;
+      margin-bottom: 40px;
+    }
+
+    /* ---- Tarjetas de instrucciones ---- */
+    .step-card {
+      border: 1px solid var(--paper3);
+      background: var(--paper);
+      margin-bottom: 20px;
+    }
+
+    .step-header {
+      background: var(--paper2);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .step-number {
+      background: var(--ink);
+      color: var(--paper);
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.78rem;
+      font-weight: 500;
+      flex-shrink: 0;
+    }
+
+    .step-title {
+      font-family: var(--font-serif);
+      font-size: 1.05rem;
+      color: var(--ink);
+      flex: 1;
+    }
+
+    .step-toggle {
+      color: var(--ink3);
+      font-size: 0.9rem;
+      transition: transform 0.2s;
+    }
+
+    .step-toggle.open { transform: rotate(180deg); }
+
+    .step-body {
+      padding: 20px;
+      display: none;
+      border-top: 1px solid var(--paper3);
+    }
+
+    .step-body.open { display: block; }
+
+    .step-body p, .step-body li {
+      font-size: 0.88rem;
+      color: var(--ink2);
+      font-weight: 300;
+      line-height: 1.75;
+      margin-bottom: 8px;
+    }
+
+    .step-body ol, .step-body ul {
+      padding-left: 20px;
+    }
+
+    .step-body code {
+      background: var(--paper2);
+      border: 1px solid var(--paper3);
+      padding: 2px 7px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.83rem;
+      color: var(--red);
+    }
+
+    .step-body strong { color: var(--ink); font-weight: 500; }
+
+    .step-body .note {
+      background: var(--paper2);
+      border-left: 3px solid var(--gold);
+      padding: 12px 16px;
+      margin-top: 12px;
+      font-size: 0.82rem;
+      color: var(--ink2);
+    }
+
+    /* ---- Input para configurar el Sheet ---- */
+    .config-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+
+    .config-row input {
+      flex: 1;
+      min-width: 200px;
+      margin-bottom: 0;
+    }
+
+    .btn-config {
+      background: var(--red);
+      color: var(--paper);
+      border: none;
+      padding: 12px 20px;
+      font-family: var(--font-sans);
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.2s;
+      white-space: nowrap;
+      border-radius: 0;
+    }
+
+    .btn-config:hover { background: var(--red2); }
+
+    .config-feedback {
+      font-size: 0.8rem;
+      color: var(--ink3);
+      margin-top: 8px;
+      display: none;
+    }
+
+    .config-feedback.visible { display: block; }
+
+    /* ---- Link al Sheet ---- */
+    .sheet-link {
+      display: inline-block;
+      margin-top: 12px;
+      color: var(--red);
+      font-size: 0.85rem;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    /* ---- Footer ---- */
+    footer {
+      background: var(--ink);
+      padding: 24px 32px;
+      color: var(--ink3);
+    }
+
+    .footer-logo {
+      font-family: var(--font-serif);
+      color: var(--paper);
+      font-size: 1.1rem;
+    }
+
+    .footer-logo em { color: var(--gold); font-style: italic; }
+
+    .footer-sub {
+      font-size: 0.75rem;
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a href="../index.html" class="navbar-logo">Hilo <em>Rojo</em></a>
+    <span class="navbar-tag">Panel de administración</span>
+  </nav>
+
+  <!-- ==================== PANTALLA DE LOGIN ==================== -->
+  <div class="login-screen" id="login-screen">
+    <div class="login-box">
+      <h2>Acceder</h2>
+      <p>Ingresa la contraseña para entrar al panel de administración.</p>
+      <label for="password-input">Contraseña</label>
+      <input
+        type="password"
+        id="password-input"
+        placeholder="••••••••"
+        autocomplete="current-password"
+      >
+      <button class="btn-login" id="login-btn">Entrar</button>
+      <p class="login-error" id="login-error">Contraseña incorrecta. Intenta de nuevo.</p>
+    </div>
+  </div>
+
+  <!-- ==================== PANEL PRINCIPAL ==================== -->
+  <div class="admin-panel" id="admin-panel">
+    <h1 class="admin-title">Panel de administración</h1>
+    <p class="admin-subtitle">Sigue las instrucciones para configurar tu tienda paso a paso. ¡Sin tecnicismos!</p>
+
+    <!-- PASO 1: Crear el Google Sheet -->
+    <div class="step-card">
+      <div class="step-header" onclick="toggleStep(this)">
+        <span class="step-number">1</span>
+        <span class="step-title">Crear el Google Sheet de productos</span>
+        <span class="step-toggle">▼</span>
+      </div>
+      <div class="step-body open">
+        <p>El Google Sheet es donde vas a guardar todos tus productos. La tienda los lee automáticamente desde ahí.</p>
+        <ol>
+          <li>Ve a <strong>sheets.google.com</strong> e inicia sesión con tu cuenta de Google.</li>
+          <li>Haz clic en el botón <strong>+ (Nuevo)</strong> para crear una hoja nueva.</li>
+          <li>En la primera fila (fila 1), escribe los títulos de las columnas <strong>exactamente así</strong>, uno por celda:</li>
+        </ol>
+        <br>
+        <p>
+          <code>id</code> &nbsp;
+          <code>nombre</code> &nbsp;
+          <code>descripcion</code> &nbsp;
+          <code>precio</code> &nbsp;
+          <code>categoria</code> &nbsp;
+          <code>imagenUrl</code> &nbsp;
+          <code>emoji</code> &nbsp;
+          <code>disponible</code>
+        </p>
+        <br>
+        <p>A partir de la fila 2, agrega tus productos. Ejemplo:</p>
+        <ul>
+          <li><strong>id:</strong> 1, 2, 3... (número único)</li>
+          <li><strong>nombre:</strong> Bolsa bohemia</li>
+          <li><strong>descripcion:</strong> Tejida a mano, disponible en varios colores</li>
+          <li><strong>precio:</strong> 320 (solo el número, sin $ ni MXN)</li>
+          <li><strong>categoria:</strong> accesorios (o: figuras, navidad, flores)</li>
+          <li><strong>imagenUrl:</strong> (el link de Google Drive que obtendrás en el paso 4)</li>
+          <li><strong>emoji:</strong> 👜 (el emoji que representa el producto)</li>
+          <li><strong>disponible:</strong> TRUE (para mostrar) o FALSE (para ocultar)</li>
+        </ul>
+        <div class="note">
+          <strong>Importante:</strong> La columna <code>disponible</code> debe decir exactamente <code>TRUE</code> en mayúsculas para que el producto aparezca en la tienda.
+        </div>
+      </div>
+    </div>
+
+    <!-- PASO 2: Publicar el Sheet -->
+    <div class="step-card">
+      <div class="step-header" onclick="toggleStep(this)">
+        <span class="step-number">2</span>
+        <span class="step-title">Hacer el Sheet público (publicar en la web)</span>
+        <span class="step-toggle">▼</span>
+      </div>
+      <div class="step-body">
+        <p>Para que la tienda pueda leer tu Sheet, necesitas publicarlo. Sigue estos pasos:</p>
+        <ol>
+          <li>En tu Google Sheet, haz clic en el menú <strong>Archivo</strong>.</li>
+          <li>Selecciona <strong>Compartir</strong> y luego <strong>Publicar en la web</strong>.</li>
+          <li>En la ventana que aparece, en "Vincular" asegúrate de que diga <strong>"Toda la hoja de cálculo"</strong>.</li>
+          <li>En el formato, selecciona <strong>Página web</strong>.</li>
+          <li>Haz clic en el botón azul <strong>Publicar</strong>.</li>
+          <li>Confirma haciendo clic en <strong>Aceptar</strong>.</li>
+        </ol>
+        <div class="note">
+          Esto NO comparte tu cuenta ni tus archivos personales. Solo hace que ese Sheet específico sea legible por la tienda.
+        </div>
+      </div>
+    </div>
+
+    <!-- PASO 3: Obtener el SHEET_ID -->
+    <div class="step-card">
+      <div class="step-header" onclick="toggleStep(this)">
+        <span class="step-number">3</span>
+        <span class="step-title">Obtener y pegar el ID del Sheet en la tienda</span>
+        <span class="step-toggle">▼</span>
+      </div>
+      <div class="step-body">
+        <p>El ID del Sheet es un código que está en la URL de tu hoja de cálculo.</p>
+        <ol>
+          <li>Con tu Sheet abierto, mira la barra de dirección del navegador. La URL se ve así:</li>
+        </ol>
+        <br>
+        <code>https://docs.google.com/spreadsheets/d/<strong>AQUI_ESTA_TU_ID</strong>/edit</code>
+        <br><br>
+        <p>El ID es la parte larga entre <code>/d/</code> y <code>/edit</code>. Cópiala completa.</p>
+        <ol start="2">
+          <li>Pega ese ID en el archivo <code>js/app.js</code>. Busca la línea:</li>
+        </ol>
+        <br>
+        <code>SHEET_ID: 'TU_SHEET_ID_AQUI',</code>
+        <br><br>
+        <p>Y cambia <code>TU_SHEET_ID_AQUI</code> por tu ID real. Ejemplo:</p>
+        <code>SHEET_ID: '1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgVE2upms',</code>
+        <br><br>
+        <p>También puedes pegarlo aquí abajo y hacer clic en el botón para actualizar automáticamente:</p>
+        <div class="config-row">
+          <input type="text" id="sheet-id-input" placeholder="Pega aquí tu SHEET_ID...">
+          <button class="btn-config" onclick="copiarConfig()">Copiar instrucción</button>
+        </div>
+        <p class="config-feedback" id="config-feedback">
+          ✓ Instrucción copiada al portapapeles. Pégala en <code>js/app.js</code>
+        </p>
+      </div>
+    </div>
+
+    <!-- PASO 4: Fotos en Google Drive -->
+    <div class="step-card">
+      <div class="step-header" onclick="toggleStep(this)">
+        <span class="step-number">4</span>
+        <span class="step-title">Subir fotos a Google Drive y obtener el link</span>
+        <span class="step-toggle">▼</span>
+      </div>
+      <div class="step-body">
+        <p>Para agregar fotos a tus productos, sube las imágenes a Google Drive y obtén un link público.</p>
+        <ol>
+          <li>Ve a <strong>drive.google.com</strong> e inicia sesión.</li>
+          <li>Haz clic en <strong>Nuevo → Subir archivo</strong> y sube la foto del producto.</li>
+          <li>Una vez subida, haz clic derecho en la foto y selecciona <strong>"Compartir"</strong>.</li>
+          <li>En el cuadro que aparece, haz clic en <strong>"Cambiar a cualquier persona con el vínculo"</strong> y pon el permiso en <strong>Lector</strong>.</li>
+          <li>Haz clic en <strong>Copiar vínculo</strong>. El link se ve así:</li>
+        </ol>
+        <br>
+        <code>https://drive.google.com/file/d/<strong>AQUI_EL_ID_DEL_ARCHIVO</strong>/view</code>
+        <br><br>
+        <p>Necesitas transformarlo a este formato para que se vea como imagen:</p>
+        <code>https://drive.google.com/uc?export=view&amp;id=<strong>AQUI_EL_ID_DEL_ARCHIVO</strong></code>
+        <br><br>
+        <p>Es decir: copia solo el ID (la parte larga entre <code>/d/</code> y <code>/view</code>) y pégalo al final de:</p>
+        <code>https://drive.google.com/uc?export=view&amp;id=</code>
+        <br><br>
+        <p>Ese link completo es el que pegas en la columna <code>imagenUrl</code> de tu Sheet.</p>
+        <div class="note">
+          Si la foto no carga, revisa que el archivo esté compartido correctamente como "Cualquier persona con el vínculo".
+        </div>
+      </div>
+    </div>
+
+    <!-- PASO 5: Número de WhatsApp -->
+    <div class="step-card">
+      <div class="step-header" onclick="toggleStep(this)">
+        <span class="step-number">5</span>
+        <span class="step-title">Cambiar el número de WhatsApp</span>
+        <span class="step-toggle">▼</span>
+      </div>
+      <div class="step-body">
+        <p>Cuando alguien hace un pedido, la tienda abre WhatsApp con el número que configures.</p>
+        <ol>
+          <li>Abre el archivo <code>js/app.js</code> con cualquier editor de texto.</li>
+          <li>Busca esta línea al principio del archivo:</li>
+        </ol>
+        <br>
+        <code>WHATSAPP_NUMBER: '521XXXXXXXXXX',</code>
+        <br><br>
+        <p>Cambia <code>521XXXXXXXXXX</code> por tu número real, incluyendo el código de país:</p>
+        <ul>
+          <li>México: <code>521</code> seguido de 10 dígitos. Ejemplo: <code>5216141234567</code></li>
+          <li>Sin espacios, sin guiones, sin símbolo <code>+</code></li>
+        </ul>
+        <div class="note">
+          El código <code>521</code> es para México con WhatsApp. El número completo se ve así: <code>5216141234567</code>
+        </div>
+      </div>
+    </div>
+
+    <!-- PASO 6: Publicar en GitHub Pages -->
+    <div class="step-card">
+      <div class="step-header" onclick="toggleStep(this)">
+        <span class="step-number">6</span>
+        <span class="step-title">Publicar en GitHub Pages (gratis)</span>
+        <span class="step-toggle">▼</span>
+      </div>
+      <div class="step-body">
+        <p>GitHub Pages te permite publicar la tienda gratis en internet. Sigue el README incluido en la carpeta del proyecto para instrucciones completas paso a paso.</p>
+        <p>En resumen, el proceso es:</p>
+        <ol>
+          <li>Crear una cuenta en <strong>github.com</strong> si no tienes una.</li>
+          <li>Crear un repositorio nuevo llamado <code>hilo-rojo</code>.</li>
+          <li>Subir todos los archivos de la tienda.</li>
+          <li>En Settings → Pages, activar GitHub Pages desde la rama <code>main</code>.</li>
+          <li>Tu tienda estará disponible en <code>https://tu-usuario.github.io/hilo-rojo</code></li>
+        </ol>
+        <div class="note">
+          Consulta el archivo <code>README.md</code> incluido en la carpeta del proyecto para instrucciones detalladas con todos los pasos explicados.
+        </div>
+      </div>
+    </div>
+
+    <!-- Link al Sheet (configurable) -->
+    <div style="margin-top:32px; padding: 20px; background: var(--paper2); border: 1px solid var(--paper3);">
+      <p style="font-size:0.8rem; color:var(--ink3); margin-bottom:8px; font-weight:300;">Acceso rápido a tu Google Sheet:</p>
+      <a
+        id="sheet-link"
+        href="#"
+        target="_blank"
+        rel="noopener"
+        class="sheet-link"
+        style="display:none"
+      >Abrir Google Sheet →</a>
+      <p id="sheet-link-placeholder" style="font-size:0.85rem; color:var(--ink3); font-weight:300;">
+        Una vez que configures el SHEET_ID en el paso 3, el link aparecerá aquí.
+      </p>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <span class="footer-logo">Hilo <em>Rojo</em></span>
+    <p class="footer-sub">Panel de administración</p>
+  </footer>
+
+  <script>
+    /* Contraseña de administración (debe coincidir con CONFIG.ADMIN_PASS en app.js) */
+    const ADMIN_PASS = 'hilorrojo2024';
+    const SHEET_ID_GUARDADO = localStorage.getItem('hilorojo_sheet_id') || '';
+
+    /* Verificar si ya hay sesión activa */
+    if (sessionStorage.getItem('hilorojo_admin') === '1') {
+      mostrarPanel();
+    }
+
+    /* Login */
+    document.getElementById('login-btn').addEventListener('click', intentarLogin);
+    document.getElementById('password-input').addEventListener('keydown', e => {
+      if (e.key === 'Enter') intentarLogin();
+    });
+
+    function intentarLogin() {
+      const pass = document.getElementById('password-input').value;
+      if (pass === ADMIN_PASS) {
+        sessionStorage.setItem('hilorojo_admin', '1');
+        mostrarPanel();
+      } else {
+        document.getElementById('login-error').style.display = 'block';
+        document.getElementById('password-input').value = '';
+        document.getElementById('password-input').focus();
+      }
+    }
+
+    function mostrarPanel() {
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('admin-panel').classList.add('visible');
+
+      /* Mostrar link al Sheet si ya está configurado */
+      if (SHEET_ID_GUARDADO && SHEET_ID_GUARDADO !== 'TU_SHEET_ID_AQUI') {
+        const sheetUrl = `https://docs.google.com/spreadsheets/d/${SHEET_ID_GUARDADO}/edit`;
+        const linkEl = document.getElementById('sheet-link');
+        linkEl.href = sheetUrl;
+        linkEl.style.display = 'inline-block';
+        document.getElementById('sheet-link-placeholder').style.display = 'none';
+        document.getElementById('sheet-id-input').value = SHEET_ID_GUARDADO;
+      }
+    }
+
+    /* Acordeón de pasos */
+    function toggleStep(header) {
+      const body   = header.nextElementSibling;
+      const toggle = header.querySelector('.step-toggle');
+      const isOpen = body.classList.contains('open');
+
+      body.classList.toggle('open', !isOpen);
+      toggle.classList.toggle('open', !isOpen);
+    }
+
+    /* Copiar instrucción del SHEET_ID */
+    function copiarConfig() {
+      const id = document.getElementById('sheet-id-input').value.trim();
+      if (!id) return;
+
+      localStorage.setItem('hilorojo_sheet_id', id);
+
+      const instruccion = `SHEET_ID: '${id}',`;
+      navigator.clipboard.writeText(instruccion).then(() => {
+        const fb = document.getElementById('config-feedback');
+        fb.classList.add('visible');
+        setTimeout(() => fb.classList.remove('visible'), 4000);
+      }).catch(() => {
+        alert(`Copia esta línea en js/app.js:\n\n${instruccion}`);
+      });
+
+      /* Mostrar link al Sheet */
+      const sheetUrl = `https://docs.google.com/spreadsheets/d/${id}/edit`;
+      const linkEl   = document.getElementById('sheet-link');
+      linkEl.href    = sheetUrl;
+      linkEl.style.display = 'inline-block';
+      document.getElementById('sheet-link-placeholder').style.display = 'none';
+    }
+  </script>
+</body>
+</html>
