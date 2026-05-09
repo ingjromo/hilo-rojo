@@ -124,7 +124,7 @@ button { font-family: var(--font-sans); }
       rgba(26, 18, 8, 0.94) 30%,
       rgba(26, 18, 8, 0.55) 100%
     ),
-    url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1600&q=80&fit=crop') center/cover no-repeat;
+    url('https://images.unsplash.com/photo-1588030439132-2533eb419181?w=1600&q=80&fit=crop') center/cover no-repeat;
   padding: 80px 40px;
   display: flex;
   align-items: center;
@@ -862,7 +862,7 @@ footer {
         rgba(26, 18, 8, 0.90) 0%,
         rgba(26, 18, 8, 0.78) 100%
       ),
-      url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1000&q=80&fit=crop') center/cover no-repeat;
+      url('https://images.unsplash.com/photo-1588030439132-2533eb419181?w=1000&q=80&fit=crop') center/cover no-repeat;
   }
 
   .hero-description { max-width: none; }
