@@ -337,7 +337,7 @@ button { font-family: var(--font-sans); }
 /* Grid: separado por líneas de 1px, sin gap */
 .product-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   border-left: 1px solid var(--paper3);
   border-top: 1px solid var(--paper3);
 }
@@ -349,7 +349,7 @@ button { font-family: var(--font-sans); }
 }
 
 .skeleton-img {
-  height: 120px;
+  height: 200px;
   background: var(--paper2);
   animation: pulse 1.6s ease-in-out infinite;
 }
@@ -385,7 +385,7 @@ button { font-family: var(--font-sans); }
 .product-card:hover { background: var(--paper2); }
 
 .product-img-wrap {
-  height: 120px;
+  height: 200px;
   background: var(--paper2);
   display: flex;
   align-items: center;
@@ -400,6 +400,28 @@ button { font-family: var(--font-sans); }
   height: 100%;
   object-fit: cover;
   display: block;
+  transition: transform 0.4s ease;
+}
+
+.product-card:hover .product-img-wrap img {
+  transform: scale(1.07);
+}
+
+/* Lupa que aparece en hover */
+.product-img-wrap::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(26, 18, 8, 0) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E") center/32px no-repeat;
+  opacity: 0;
+  transition: opacity 0.25s ease, background-color 0.25s ease;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.product-card:hover .product-img-wrap::after {
+  background-color: rgba(26, 18, 8, 0.28);
+  opacity: 1;
 }
 
 .product-emoji {
@@ -429,7 +451,7 @@ button { font-family: var(--font-sans); }
 }
 
 .product-body {
-  padding: 12px;
+  padding: 16px;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -437,18 +459,18 @@ button { font-family: var(--font-sans); }
 
 .product-name {
   font-family: var(--font-serif);
-  font-size: 0.92rem;
+  font-size: 1rem;
   color: var(--ink);
-  margin-bottom: 5px;
+  margin-bottom: 8px;
   line-height: 1.3;
 }
 
 .product-desc {
   color: var(--ink3);
-  font-size: 0.71rem;
+  font-size: 0.75rem;
   font-weight: 300;
-  line-height: 1.55;
-  margin-bottom: 12px;
+  line-height: 1.6;
+  margin-bottom: 16px;
   flex: 1;
   overflow: hidden;
   display: -webkit-box;

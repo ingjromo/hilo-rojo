@@ -22,7 +22,7 @@ function normalizarUrlDrive(url) {
 
   if (!fileId) return url;
 
-  return `https://drive.google.com/thumbnail?id=${fileId}&sz=w800`;
+  return `https://drive.google.com/thumbnail?id=${fileId}&sz=w1200`;
 }
 
 async function fetchProductos(sheetId) {
