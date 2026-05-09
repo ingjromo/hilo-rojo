@@ -114,7 +114,7 @@ function solicitarPorWhatsApp() {
     `¿Me pueden dar los datos de transferencia?`;
 
   const url = `https://wa.me/${CONFIG.WHATSAPP_NUMBER}?text=${encodeURIComponent(mensaje)}`;
-  window.open(url, '_blank', 'noopener');
+  window.location.href = url;
 }
 
 /* ==================== DRAWER DEL CARRITO ==================== */
