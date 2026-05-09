@@ -451,7 +451,7 @@
         <p>Y cambia <code>TU_SHEET_ID_AQUI</code> por tu ID real. Ejemplo:</p>
         <code>SHEET_ID: '1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgVE2upms',</code>
         <br><br>
-        <p>También puedes pegarlo aquí abajo y hacer clic en el botón para actualizar automáticamente:</p>
+        <p>También puedes pegarlo aquí abajo y hacer clic en el botón para copiar la instrucción lista:</p>
         <div class="config-row">
           <input type="text" id="sheet-id-input" placeholder="Pega aquí tu SHEET_ID...">
           <button class="btn-config" onclick="copiarConfig()">Copiar instrucción</button>
@@ -568,9 +568,22 @@
   </footer>
 
   <script>
-    /* Contraseña de administración (debe coincidir con CONFIG.ADMIN_PASS en app.js) */
-    const ADMIN_PASS = 'hilorrojo2024';
+    /*
+     * La contraseña NO se guarda aquí en texto plano.
+     * Este es el hash SHA-256 de la contraseña real.
+     * Para cambiarla: calcula sha256 de tu nueva contraseña y reemplaza este valor.
+     *   Mac/Linux: echo -n 'tu-nueva-contraseña' | shasum -a 256
+     */
+    const ADMIN_PASS_HASH = '7b02558afef8f2e0ca4b2cab70a3399c6d6cb4604e0d7bfb6aece6ce14c91210';
     const SHEET_ID_GUARDADO = localStorage.getItem('hilorojo_sheet_id') || '';
+
+    async function sha256(text) {
+      const encoder = new TextEncoder();
+      const data = encoder.encode(text);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+      return Array.from(new Uint8Array(hashBuffer))
+        .map(b => b.toString(16).padStart(2, '0')).join('');
+    }
 
     /* Verificar si ya hay sesión activa */
     if (sessionStorage.getItem('hilorojo_admin') === '1') {
@@ -583,9 +596,10 @@
       if (e.key === 'Enter') intentarLogin();
     });
 
-    function intentarLogin() {
+    async function intentarLogin() {
       const pass = document.getElementById('password-input').value;
-      if (pass === ADMIN_PASS) {
+      const hash = await sha256(pass);
+      if (hash === ADMIN_PASS_HASH) {
         sessionStorage.setItem('hilorojo_admin', '1');
         mostrarPanel();
       } else {
