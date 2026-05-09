@@ -395,7 +395,6 @@ button { font-family: var(--font-sans); }
   position: relative;
   overflow: hidden;
   flex-shrink: 0;
-  cursor: crosshair;
 }
 
 .product-img-wrap img {
@@ -547,13 +546,20 @@ button { font-family: var(--font-sans); }
 }
 
 .modal-img-wrap {
-  height: 240px;
+  height: 380px;
   background: var(--paper2);
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
   flex-shrink: 0;
+  position: relative;
+}
+
+/* Lupa del modal — más grande que la de cards */
+.modal-img-wrap .magnifier-lens {
+  width: 170px;
+  height: 170px;
 }
 
 .modal-img-wrap img {

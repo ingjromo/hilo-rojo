@@ -167,9 +167,20 @@ function abrirModal(producto) {
 
   document.getElementById('modal-overlay').classList.add('open');
   document.body.style.overflow = 'hidden';
+
+  /* Lupa: esperar a que la imagen cargue antes de iniciar */
+  const imgEl = document.getElementById('modal-img-wrap')?.querySelector('img');
+  if (imgEl) {
+    if (imgEl.complete) {
+      iniciarMagnifierModal();
+    } else {
+      imgEl.addEventListener('load', iniciarMagnifierModal, { once: true });
+    }
+  }
 }
 
 function cerrarModal() {
+  if (limpiarMagnifierModal) { limpiarMagnifierModal(); limpiarMagnifierModal = null; }
   document.getElementById('modal-overlay').classList.remove('open');
   document.body.style.overflow = '';
   productoModal = null;
@@ -231,40 +242,53 @@ function renderizarProductos(lista) {
     </article>
   `).join('');
 
-  iniciarMagnificadores();
 }
 
-/* ==================== LUPA / MAGNIFIER ==================== */
+/* ==================== LUPA / MAGNIFIER (solo en modal) ==================== */
 
-function iniciarMagnificadores() {
-  document.querySelectorAll('.product-card').forEach(card => {
-    const wrap = card.querySelector('.product-img-wrap');
-    const img  = wrap?.querySelector('img');
-    if (!img) return;
+let limpiarMagnifierModal = null;
 
-    const lupa = document.createElement('div');
-    lupa.className = 'magnifier-lens';
-    wrap.appendChild(lupa);
+function iniciarMagnifierModal() {
+  if (limpiarMagnifierModal) { limpiarMagnifierModal(); limpiarMagnifierModal = null; }
 
-    wrap.addEventListener('mousemove', e => {
-      const rect  = wrap.getBoundingClientRect();
-      const x     = e.clientX - rect.left;
-      const y     = e.clientY - rect.top;
-      const size  = 110;
-      const zoom  = 2.8;
+  const wrap = document.getElementById('modal-img-wrap');
+  const img  = wrap?.querySelector('img');
+  if (!img) return;
 
-      lupa.style.left = `${x - size / 2}px`;
-      lupa.style.top  = `${y - size / 2}px`;
+  wrap.style.cursor = 'crosshair';
+  wrap.querySelectorAll('.magnifier-lens').forEach(el => el.remove());
 
-      lupa.style.backgroundImage    = `url('${img.src}')`;
-      lupa.style.backgroundSize     = `${rect.width * zoom}px ${rect.height * zoom}px`;
-      lupa.style.backgroundPosition =
-        `${(x / rect.width) * 100}% ${(y / rect.height) * 100}%`;
-    });
+  const lupa = document.createElement('div');
+  lupa.className = 'magnifier-lens';
+  wrap.appendChild(lupa);
 
-    wrap.addEventListener('mouseenter', () => { lupa.style.opacity = '1'; });
-    wrap.addEventListener('mouseleave', () => { lupa.style.opacity = '0'; });
-  });
+  const SIZE = 170;
+  const ZOOM = 3;
+
+  function onMove(e) {
+    const rect = wrap.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    lupa.style.left               = `${x - SIZE / 2}px`;
+    lupa.style.top                = `${y - SIZE / 2}px`;
+    lupa.style.backgroundImage    = `url('${img.src}')`;
+    lupa.style.backgroundSize     = `${rect.width * ZOOM}px ${rect.height * ZOOM}px`;
+    lupa.style.backgroundPosition = `${(x / rect.width) * 100}% ${(y / rect.height) * 100}%`;
+  }
+  function onEnter() { lupa.style.opacity = '1'; }
+  function onLeave() { lupa.style.opacity = '0'; }
+
+  wrap.addEventListener('mousemove', onMove);
+  wrap.addEventListener('mouseenter', onEnter);
+  wrap.addEventListener('mouseleave', onLeave);
+
+  limpiarMagnifierModal = () => {
+    wrap.removeEventListener('mousemove', onMove);
+    wrap.removeEventListener('mouseenter', onEnter);
+    wrap.removeEventListener('mouseleave', onLeave);
+    lupa.remove();
+    wrap.style.cursor = '';
+  };
 }
 
 /* ==================== FILTROS ==================== */
