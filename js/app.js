@@ -230,6 +230,41 @@ function renderizarProductos(lista) {
       </div>
     </article>
   `).join('');
+
+  iniciarMagnificadores();
+}
+
+/* ==================== LUPA / MAGNIFIER ==================== */
+
+function iniciarMagnificadores() {
+  document.querySelectorAll('.product-card').forEach(card => {
+    const wrap = card.querySelector('.product-img-wrap');
+    const img  = wrap?.querySelector('img');
+    if (!img) return;
+
+    const lupa = document.createElement('div');
+    lupa.className = 'magnifier-lens';
+    wrap.appendChild(lupa);
+
+    wrap.addEventListener('mousemove', e => {
+      const rect  = wrap.getBoundingClientRect();
+      const x     = e.clientX - rect.left;
+      const y     = e.clientY - rect.top;
+      const size  = 110;
+      const zoom  = 2.8;
+
+      lupa.style.left = `${x - size / 2}px`;
+      lupa.style.top  = `${y - size / 2}px`;
+
+      lupa.style.backgroundImage    = `url('${img.src}')`;
+      lupa.style.backgroundSize     = `${rect.width * zoom}px ${rect.height * zoom}px`;
+      lupa.style.backgroundPosition =
+        `${(x / rect.width) * 100}% ${(y / rect.height) * 100}%`;
+    });
+
+    wrap.addEventListener('mouseenter', () => { lupa.style.opacity = '1'; });
+    wrap.addEventListener('mouseleave', () => { lupa.style.opacity = '0'; });
+  });
 }
 
 /* ==================== FILTROS ==================== */
