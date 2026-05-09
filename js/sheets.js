@@ -7,6 +7,24 @@ function mostrarSkeletons() {
   grid.innerHTML = html;
 }
 
+/* Convierte cualquier URL de Google Drive al formato thumbnail que sí carga como imagen.
+   Google dejó de servir imágenes vía uc?export=view — el endpoint thumbnail es el reemplazo. */
+function normalizarUrlDrive(url) {
+  if (!url) return '';
+
+  // Soporta estos formatos:
+  //   https://drive.google.com/file/d/FILE_ID/view
+  //   https://drive.google.com/uc?export=view&id=FILE_ID
+  //   https://drive.google.com/open?id=FILE_ID
+  const matchPath  = url.match(/\/file\/d\/([^/?]+)/);
+  const matchQuery = url.match(/[?&]id=([^&]+)/);
+  const fileId = (matchPath?.[1] ?? matchQuery?.[1] ?? '').trim();
+
+  if (!fileId) return url;
+
+  return `https://drive.google.com/thumbnail?id=${fileId}&sz=w800`;
+}
+
 async function fetchProductos(sheetId) {
   if (!sheetId || sheetId === 'TU_SHEET_ID_AQUI') return null;
   const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json`;
@@ -26,7 +44,7 @@ async function fetchProductos(sheetId) {
         descripcion: String(c[2]?.v ?? '').trim(),
         precio:      parseFloat(c[3]?.v) || 0,
         categoria:   String(c[4]?.v ?? '').toLowerCase().trim(),
-        imagenUrl:   String(c[5]?.v ?? '').trim(),
+        imagenUrl:   normalizarUrlDrive(String(c[5]?.v ?? '').trim()),
         emoji:       String(c[6]?.v ?? '🧶').trim(),
         disponible:  c[7]?.v,
       };
